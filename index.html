@@ -65,9 +65,10 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 80%;
+            width: 95%;
             margin: 0 auto;
             animation: fadeIn 0.5s ease;
+            overflow-x: auto;
         }
         
         @keyframes fadeIn {
@@ -738,6 +739,27 @@
             grid-column: 1 / -1;
         }
         
+        /* أنماط إضافية لتبويب أعمال السنة */
+        .year-work-select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-width: 50px;
+            text-align: center;
+            margin: 2px;
+        }
+        
+        .year-work-total {
+            font-weight: bold;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .year-work-header {
+            white-space: nowrap;
+        }
+        
         /* تحسينات للهواتف */
         @media (max-width: 768px) {
             .tabs-container {
@@ -823,22 +845,6 @@
                 max-height: 80%;
             }
         }
-        
-        /* أنماط إضافية لتبويب أعمال السنة */
-        .year-work-select {
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            min-width: 50px;
-            text-align: center;
-        }
-        
-        .year-work-total {
-            font-weight: bold;
-            background-color: #f0f0f0;
-            padding: 5px;
-            border-radius: 3px;
-        }
     </style>
 </head>
 <body>
@@ -854,7 +860,7 @@
         <div class="tab" onclick="openTab(event, 'youtube')">يوتيوب</div>
     </div>
     
-    <!-- تبويب السلوك (المعدل) -->
+    <!-- تبويب السلوك -->
     <div id="behavior" class="tab-content active">
         <div class="grades-frame">
             <h3>اختر الصف الافتراضي:</h3>
@@ -915,9 +921,35 @@
         </table>
     </div>
     
-    <!-- تبويب أعمال السنة (الجديد) -->
+    <!-- تبويب أعمال السنة (المعدل) -->
     <div id="yearWork" class="tab-content">
         <h2>أعمال السنة</h2>
+        
+        <div class="grades-frame">
+            <h3>اختر الصف الافتراضي:</h3>
+            <div class="grade-options">
+                <button class="grade-btn" onclick="selectGrade('أول1')">أول1</button>
+                <button class="grade-btn" onclick="selectGrade('أول2')">أول2</button>
+                <button class="grade-btn" onclick="selectGrade('ثاني1')">ثاني1</button>
+                <button class="grade-btn" onclick="selectGrade('ثاني2')">ثاني2</button>
+                <button class="grade-btn" onclick="selectGrade('ثالث1')">ثالث1</button>
+                <button class="grade-btn" onclick="selectGrade('ثالث2')">ثالث2</button>
+                <button class="grade-btn" onclick="selectGrade('ثالث3')">ثالث3</button>
+            </div>
+            <input type="hidden" id="selectedGradeYearWork" value="">
+        </div>
+        
+        <div class="student-form">
+            <div class="form-group">
+                <input type="text" id="studentNameYearWork" class="student-input" placeholder="ادخل اسم الطالب ثم اضغط Enter" onkeydown="handleEnterKeyYearWork(event)">
+            </div>
+            <button class="btn" onclick="addStudentYearWork()">إضافة طالب</button>
+        </div>
+        
+        <div class="form-group">
+            <textarea id="multipleStudentsYearWork" class="multi-student-textarea" placeholder="ادخل أسماء الطلاب، كل اسم في سطر مستقل"></textarea>
+        </div>
+        <button class="btn" onclick="addMultipleStudentsYearWork()">إضافة طلاب</button>
         
         <div class="grade-filter">
             <label for="filterYearWorkGrade">تصفية حسب الصف:</label>
@@ -940,12 +972,23 @@
                 <tr>
                     <th>الاسم</th>
                     <th>الصف</th>
-                    <th>و (مجموع 10)</th>
-                    <th>بحث (مجموع 10)</th>
-                    <th>تطبيقات (مجموع 10)</th>
-                    <th>م (مجموع 15)</th>
-                    <th>اختبار (0-20)</th>
-                    <th>م.ن (المجموع الكلي)</th>
+                    <th class="year-work-header">و (مجموع 10)</th>
+                    <th class="year-work-header">بحث (مجموع 10)</th>
+                    <th class="year-work-header">تطبيقات (مجموع 10)</th>
+                    <th class="year-work-header">م (مجموع 15)</th>
+                    <th class="year-work-header">اختبار (0-20)</th>
+                    <th class="year-work-header">م.ن (المجموع الكلي)</th>
+                    <th>حذف</th>
+                </tr>
+                <tr>
+                    <th colspan="2"></th>
+                    <th>1|2|3|4|5|المجموع</th>
+                    <th>1|2|3|4|5|المجموع</th>
+                    <th>1|2|3|4|5|المجموع</th>
+                    <th>1|2|3|4|5|المجموع</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="yearWorkList">
@@ -1025,8 +1068,11 @@
             imageModal: document.getElementById('imageModal'),
             modalImage: document.getElementById('modalImage'),
             selectedGrade: document.getElementById('selectedGrade'),
+            selectedGradeYearWork: document.getElementById('selectedGradeYearWork'),
             studentName: document.getElementById('studentName'),
+            studentNameYearWork: document.getElementById('studentNameYearWork'),
             multipleStudents: document.getElementById('multipleStudents'),
+            multipleStudentsYearWork: document.getElementById('multipleStudentsYearWork'),
             filterGrade: document.getElementById('filterGrade'),
             filterYearWorkGrade: document.getElementById('filterYearWorkGrade'),
             youtubeUrl: document.getElementById('youtubeUrl'),
@@ -1086,12 +1132,19 @@
             event.target.classList.add('active');
             selectedGradeBtn = event.target;
             domCache.selectedGrade.value = grade;
+            domCache.selectedGradeYearWork.value = grade;
         }
         
         // دالة معالجة زر Enter
         function handleEnterKey(event) {
             if (event.key === 'Enter') {
                 addStudent();
+            }
+        }
+        
+        function handleEnterKeyYearWork(event) {
+            if (event.key === 'Enter') {
+                addStudentYearWork();
             }
         }
         
@@ -1112,6 +1165,25 @@
             
             addStudentToTable(studentName, grade);
             domCache.studentName.value = '';
+            saveData();
+        }
+        
+        function addStudentYearWork() {
+            const studentName = domCache.studentNameYearWork.value;
+            const grade = domCache.selectedGradeYearWork.value;
+            
+            if (studentName.trim() === '') {
+                showAlert('الرجاء إدخال اسم الطالب', 'error');
+                return;
+            }
+            
+            if (grade === '') {
+                showAlert('الرجاء اختيار صف', 'error');
+                return;
+            }
+            
+            addStudentToYearWork(studentName, grade);
+            domCache.studentNameYearWork.value = '';
             saveData();
         }
         
@@ -1137,6 +1209,30 @@
             });
             
             domCache.multipleStudents.value = '';
+            saveData();
+        }
+        
+        function addMultipleStudentsYearWork() {
+            const studentsText = domCache.multipleStudentsYearWork.value;
+            const grade = domCache.selectedGradeYearWork.value;
+            
+            if (studentsText.trim() === '') {
+                showAlert('الرجاء إدخال أسماء الطلاب', 'error');
+                return;
+            }
+            
+            if (grade === '') {
+                showAlert('الرجاء اختيار صف', 'error');
+                return;
+            }
+            
+            const students = studentsText.split('\n').map(name => name.trim()).filter(name => name !== '');
+            
+            students.forEach(student => {
+                addStudentToYearWork(student, grade);
+            });
+            
+            domCache.multipleStudentsYearWork.value = '';
             saveData();
         }
         
@@ -1213,6 +1309,7 @@
             });
             
             updateYearWorkTable();
+            saveData();
         }
         
         // دالة تحديث صف الطالب
@@ -1230,6 +1327,7 @@
             }
             
             saveData();
+            updateYearWorkTable();
         }
         
         // دالة تحديث السلوك
@@ -1401,14 +1499,23 @@
                 
                 tr.innerHTML = `
                     <td>${student.name}</td>
-                    <td>${student.grade}</td>
+                    <td>
+                        <select class="grade-select" onchange="updateStudentGrade(${student.id}, this.value)">
+                            <option value="أول1" ${student.grade === 'أول1' ? 'selected' : ''}>أول1</option>
+                            <option value="أول2" ${student.grade === 'أول2' ? 'selected' : ''}>أول2</option>
+                            <option value="ثاني1" ${student.grade === 'ثاني1' ? 'selected' : ''}>ثاني1</option>
+                            <option value="ثاني2" ${student.grade === 'ثاني2' ? 'selected' : ''}>ثاني2</option>
+                            <option value="ثالث1" ${student.grade === 'ثالث1' ? 'selected' : ''}>ثالث1</option>
+                            <option value="ثالث2" ${student.grade === 'ثالث2' ? 'selected' : ''}>ثالث2</option>
+                            <option value="ثالث3" ${student.grade === 'ثالث3' ? 'selected' : ''}>ثالث3</option>
+                        </select>
+                    </td>
                     <td>
                         ${Array.from({length: 6}, (_, i) => `
                             <select class="year-work-select" 
                                 onchange="updateYearWorkScore(${student.id}, 'w', ${i}, this.value)"
                                 ${i === 5 ? 'disabled' : ''}>
-                                ${i < 5 ? generateOptions(0, 2, student.wScores[i]) : ''}
-                                <option value="${wTotal}" selected>${wTotal}</option>
+                                ${i < 5 ? generateOptions(0, 2, student.wScores[i]) : `<option value="${wTotal}" selected>${wTotal}</option>`}
                             </select>
                         `).join('')}
                     </td>
@@ -1417,8 +1524,7 @@
                             <select class="year-work-select" 
                                 onchange="updateYearWorkScore(${student.id}, 'research', ${i}, this.value)"
                                 ${i === 5 ? 'disabled' : ''}>
-                                ${i < 5 ? generateOptions(0, 2, student.researchScores[i]) : ''}
-                                <option value="${researchTotal}" selected>${researchTotal}</option>
+                                ${i < 5 ? generateOptions(0, 2, student.researchScores[i]) : `<option value="${researchTotal}" selected>${researchTotal}</option>`}
                             </select>
                         `).join('')}
                     </td>
@@ -1427,8 +1533,7 @@
                             <select class="year-work-select" 
                                 onchange="updateYearWorkScore(${student.id}, 'application', ${i}, this.value)"
                                 ${i === 5 ? 'disabled' : ''}>
-                                ${i < 5 ? generateOptions(0, 2, student.applicationScores[i]) : ''}
-                                <option value="${applicationTotal}" selected>${applicationTotal}</option>
+                                ${i < 5 ? generateOptions(0, 2, student.applicationScores[i]) : `<option value="${applicationTotal}" selected>${applicationTotal}</option>`}
                             </select>
                         `).join('')}
                     </td>
@@ -1437,8 +1542,7 @@
                             <select class="year-work-select" 
                                 onchange="updateYearWorkScore(${student.id}, 'm', ${i}, this.value)"
                                 ${i === 5 ? 'disabled' : ''}>
-                                ${i < 5 ? generateOptions(0, 3, student.mScores[i]) : ''}
-                                <option value="${mTotal}" selected>${mTotal}</option>
+                                ${i < 5 ? generateOptions(0, 3, student.mScores[i]) : `<option value="${mTotal}" selected>${mTotal}</option>`}
                             </select>
                         `).join('')}
                     </td>
@@ -1448,6 +1552,7 @@
                         </select>
                     </td>
                     <td class="year-work-total">${student.totalScore}</td>
+                    <td><button class="action-btn delete-btn" onclick="deleteStudent(${student.id})">حذف</button></td>
                 `;
                 
                 tbody.appendChild(tr);
