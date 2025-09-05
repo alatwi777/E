@@ -684,6 +684,10 @@
         
         .youtube-video-info {
             padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 120px;
         }
         
         .youtube-video-title {
@@ -1090,6 +1094,9 @@
         let currentMediaGrade = '';
         const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
         
+        // متغير لحفظ حالة التصفية الحالية
+        let currentYearWorkFilter = 'all';
+        
         // تحميل البيانات عند بدء التشغيل
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
@@ -1115,6 +1122,8 @@
             
             if (tabName === 'yearWork') {
                 updateYearWorkTable();
+                // تطبيق التصفية الحالية عند فتح التبويب
+                setTimeout(() => filterYearWorkStudents(currentYearWorkFilter), 100);
             } else if (tabName === 'media') {
                 updateMediaFilesDisplay();
             } else if (tabName === 'youtube') {
@@ -1309,6 +1318,8 @@
             });
             
             updateYearWorkTable();
+            // تطبيق التصفية الحالية بعد التحديث
+            setTimeout(() => filterYearWorkStudents(currentYearWorkFilter), 100);
             saveData();
         }
         
@@ -1328,6 +1339,8 @@
             
             saveData();
             updateYearWorkTable();
+            // تطبيق التصفية الحالية بعد التحديث
+            setTimeout(() => filterYearWorkStudents(currentYearWorkFilter), 100);
         }
         
         // دالة تحديث السلوك
@@ -1424,6 +1437,8 @@
                     
                     saveData();
                     updateYearWorkTable();
+                    // تطبيق التصفية الحالية بعد الحذف
+                    setTimeout(() => filterYearWorkStudents(currentYearWorkFilter), 100);
                 }
             }
         }
@@ -1444,8 +1459,15 @@
         }
         
         // دالة تصفية طلاب أعمال السنة
-        function filterYearWorkStudents() {
-            const selectedGrade = domCache.filterYearWorkGrade.value;
+        function filterYearWorkStudents(selectedGrade = null) {
+            if (selectedGrade === null) {
+                selectedGrade = domCache.filterYearWorkGrade.value;
+            }
+            
+            // حفظ حالة التصفية الحالية
+            currentYearWorkFilter = selectedGrade;
+            domCache.filterYearWorkGrade.value = selectedGrade;
+            
             const rows = document.querySelectorAll('#yearWorkList tr');
             
             rows.forEach(row => {
@@ -1557,6 +1579,9 @@
                 
                 tbody.appendChild(tr);
             });
+            
+            // تطبيق التصفية الحالية بعد تحديث الجدول
+            setTimeout(() => filterYearWorkStudents(currentYearWorkFilter), 100);
         }
         
         // دالة إنشاء خيارات القوائم المنسدلة
@@ -1587,6 +1612,8 @@
             
             saveData();
             updateYearWorkTable();
+            // تطبيق التصفية الحالية بعد التحديث
+            setTimeout(() => filterYearWorkStudents(currentYearWorkFilter), 100);
         }
         
         // دالة التصدير إلى CSV لتبويب السلوك
@@ -1971,7 +1998,7 @@
                                     <option value="أول2" ${student.grade === 'أول2' ? 'selected' : ''}>أول2</option>
                                     <option value="ثاني1" ${student.grade === 'ثاني1' ? 'selected' : ''}>ثاني1</option>
                                     <option value="ثاني2" ${student.grade === 'ثاني2' ? 'selected' : ''}>ثاني2</option>
-                                    <option value="ثالث1" ${student.grade === 'ثالث1' ? 'selected' : ''}>ثالث1</option>
+                                    <option value="ثاني3" ${student.grade === 'ثالث1' ? 'selected' : ''}>ثالث1</option>
                                     <option value="ثالث2" ${student.grade === 'ثالث2' ? 'selected' : ''}>ثالث2</option>
                                     <option value="ثالث3" ${student.grade === 'ثالث3' ? 'selected' : ''}>ثالث3</option>
                                 </select>
