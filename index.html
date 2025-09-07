@@ -985,15 +985,7 @@
                     <th>حذف</th>
                 </tr>
                 <tr>
-                    <th colspan="2"></th>
-                    <th>1|2|3|4|5|المجموع</th>
-                    <th>1|2|3|4|5|المجموع</th>
-                    <th>1|2|3|4|5|المجموع</th>
-                    <th>1|2|3|4|5|المجموع</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+                    
             </thead>
             <tbody id="yearWorkList">
                 <!-- سيتم إضافة الطلاب هنا ديناميكيًا -->
@@ -1016,7 +1008,7 @@
             <button class="media-grade-btn" onclick="selectMediaGrade('ثاني متوسط')">ثاني متوسط</button>
             <button class="media-grade-btn" onclick="selectMediaGrade('ثالث متوسط')">ثالث متوسط</button>
         </div>
-        
+        ا
         <div style="text-align: center; margin: 20px 0;">
             <label for="imageUpload" class="file-input-label">
                 <span>رفع صورة</span>
@@ -1370,6 +1362,9 @@
                     student.behavior = newBehavior;
                     student.score = newScore;
                     gradeCell.textContent = newScore;
+                    
+                    // حفظ البيانات بعد التحديث
+                    saveData();
                 }
                 return;
             }
@@ -1377,6 +1372,8 @@
             if (selectedBehavior === 'إيجابي') {
                 // لا يوجد تغيير في الدرجة للسلوك الإيجابي
                 student.behavior = selectedBehavior;
+                // حفظ البيانات بعد التحديث
+                saveData();
                 return;
             }
             
@@ -1385,6 +1382,8 @@
                 student.behavior = selectedBehavior;
                 student.score = newScore;
                 gradeCell.textContent = newScore;
+                // حفظ البيانات بعد التحديث
+                saveData();
                 return;
             }
             
@@ -1396,6 +1395,7 @@
                 gradeCell.textContent = newScore;
             }
             
+            // حفظ البيانات بعد التحديث
             saveData();
         }
         
@@ -1998,7 +1998,7 @@
                                     <option value="أول2" ${student.grade === 'أول2' ? 'selected' : ''}>أول2</option>
                                     <option value="ثاني1" ${student.grade === 'ثاني1' ? 'selected' : ''}>ثاني1</option>
                                     <option value="ثاني2" ${student.grade === 'ثاني2' ? 'selected' : ''}>ثاني2</option>
-                                    <option value="ثاني3" ${student.grade === 'ثالث1' ? 'selected' : ''}>ثالث1</option>
+                                    <option value="ثالث1" ${student.grade === 'ثالث1' ? 'selected' : ''}>ثالث1</option>
                                     <option value="ثالث2" ${student.grade === 'ثالث2' ? 'selected' : ''}>ثالث2</option>
                                     <option value="ثالث3" ${student.grade === 'ثالث3' ? 'selected' : ''}>ثالث3</option>
                                 </select>
@@ -2058,7 +2058,7 @@
                     yearWorkData = parsedData.yearWorkData;
                 }
                 
-                if (parsedData.mediaFiles) {
+                if (parzedData.mediaFiles) {
                     mediaFiles = parsedData.mediaFiles;
                 }
                 
